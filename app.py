@@ -54,25 +54,27 @@ def draw_graph(G):
     st.pyplot(fig)
 
 st.write("#### Inspiser [Norsk Dependenstrebank](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-10/)")
-st.write("En trebank over norsk (bokmål og nynorsk). Visualisering med graphviz og networkx")
+st.write("En trebank over norsk (bokmål og nynorsk). Visualisering med [graphviz](https://graphviz.org/) og [networkx](https://networkx.org)")
 ndt, sent = get_ndt()
 
 if not 'current' in st.session_state:
     st.session_state['current'] = 1
 
-col1, col2, col3 = st.columns([3,1,1])
+col1, col2, col3, col4 = st.columns([2,1,2,1])
 with col1:
-    s = st.text_input("Velg et ord fra en setning eller skriv inn et nummer mellom 1 og 4309", "", help="Om input ikke gjenkjennes velges en tilfeldig trestruktur")
+    s = st.text_input("Ord eller nummer", "", help="Søk i setninger eller angi et setningsnummer, de ligger mellom 1 og 4309")
 
-with col3:
+with col4:
     st.write('Utvalg')
     if st.button(f'klikk for tilfeldig', help="Velger en vilkårlig setning"):
         s = list(sent.sample(1).index)[0]
         
 with col2:
     #crnt = st.session_state['current']
-    antall = st.number_input('antall setninger', min_value = 1, max_value=20, value=4)
-    
+    antall = st.number_input('antall setninger', min_value = 1, max_value=20, value=4, help="Antall setninger etter første setning, for å se litt diskursting")
+with col4:
+    pass
+
 #st.write(s)        
 try:
     ix = int(s)
@@ -80,7 +82,7 @@ try:
         ix = list(sent.sample(1).index)[0]
 except:
     try:
-        ix = list(sent[sent['form'].str.contains(t)].sample(1).index)[0]
+        ix = list(sent[sent['form'].str.contains(s)].sample(1).index)[0]
     except:
         ix = list(sent.sample(1).index)[0]
 
