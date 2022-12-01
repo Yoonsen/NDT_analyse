@@ -19,7 +19,8 @@ def make_sentence_graph(indx):
     edges = ndt[ndt.sent_id == indx]["token_order head deprel".split()]
     nodes = ndt[ndt.sent_id == indx]["token_order form".split()]
 
-    edgelist = [(int(e[1].token_order), int(e[1]['head']), {'name':e[1].deprel}) for e in edges.iterrows()]
+    #edgelist = [(int(e[1].token_order), int(e[1]['head']), {'name':e[1].deprel}) for e in edges.iterrows()]
+    edgelist = [(int(e[1]['head']), int(e[1].token_order), {'name':e[1].deprel}) for e in edges.iterrows()]
     nodelist = [(int(e[1].token_order), {'name':e[1]['form']}) for e in nodes.iterrows()] 
 
     G = nx.DiGraph()
@@ -38,7 +39,8 @@ def draw_graph(G):
     nodelabels = {x[0]:x[1]['name'] for x in G.nodes(data=True)}
     pos =  nx.nx_agraph.graphviz_layout(G, prog="dot")
     G.graph.setdefault('graph', {})['rankdir'] = 'BT'
-    fig = plt.figure(figsize=(16,8))
+    n = nx.dag_longest_path(G)
+    fig = plt.figure(figsize=(16,1.4*len(n)))
     # nodes
     options = {"edgecolors": "tab:gray", "node_size": 0, "alpha": 0.9}
     # n1 = list(G.nodes)[:int(len(list(G.nodes))/2)]
@@ -48,9 +50,9 @@ def draw_graph(G):
 
     # edges
     
-    nx.draw_networkx_edges(G, pos, width=1.2, alpha=0.2, arrows=True) #, connectionstyle="arc3,rad=0.3");
-    nx.draw_networkx_edge_labels(G, pos, edge_labels = edgelabels, font_size=10,font_color='red');
-    nx.draw_networkx_labels(G, pos, labels = nodelabels, font_color='blue', font_size=12);
+    nx.draw_networkx_edges(G, pos, width=1.2, alpha=0.3, arrows=True, edge_color='green') #, connectionstyle="arc3,rad=0.3");
+    nx.draw_networkx_edge_labels(G, pos, edge_labels = edgelabels, font_size=8,font_color='orange');
+    nx.draw_networkx_labels(G, pos, labels = nodelabels, font_color='darkblue', font_size=12);
     st.pyplot(fig)
 
 st.write("#### Inspiser [Norsk Dependenstrebank](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-10/)")
