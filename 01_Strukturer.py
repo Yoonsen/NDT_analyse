@@ -44,13 +44,6 @@ def draw_graph(G):
     fig = plt.figure(figsize=(16,1.4*len(n)))
     # nodes
     options = {"edgecolors": "tab:gray", "node_size": 0, "alpha": 0.9}
-    # n1 = list(G.nodes)[:int(len(list(G.nodes))/2)]
-    # n2 = list(G.nodes)[int(len(list(G.nodes))/2):]
-    # nx.draw_networkx_nodes(G, pos,nodelist = n1, node_color="tab:red", **options)
-    # nx.draw_networkx_nodes(G, pos,nodelist = n2, node_color="tab:blue", **options)
-
-    # edges
-    
     nx.draw_networkx_edges(G, pos, width=1.2, alpha=0.3, arrows=True, edge_color='gray') #, connectionstyle="arc3,rad=0.3");
     nx.draw_networkx_edge_labels(G, pos, edge_labels = edgelabels, font_size=8,font_color='orange');
     nx.draw_networkx_labels(G, pos, labels = nodelabels, font_color='darkblue', font_size=12);
@@ -73,8 +66,8 @@ if not 'current' in st.session_state:
 
 col1, col2, col3, col4 = st.columns([2,1,2,1])
 with col1:
-    s = st.text_input("Ord eller nummer", "", help="Søk i setninger eller angi et setningsnummer, de ligger mellom 1 og 4309")
-
+    s = st.text_input("Ord i en setning eller setningsnummer", "", help="Søk i setninger eller angi et setningsnummer, de ligger mellom 1 og opp til noe under 40 000")
+    #st.write(s)
 with col4:
     st.write('Utvalg')
     if st.button(f'klikk for tilfeldig', help="Velger en vilkårlig setning"):
@@ -89,8 +82,6 @@ with col4:
 #st.write(s)        
 try:
     ix = int(s)
-    if not 1 <= ix <= 4309:
-        ix = list(sent.sample(1).index)[0]
 except:
     try:
         ix = list(sent[sent['form'].str.contains(s)].sample(1).index)[0]
@@ -101,6 +92,7 @@ except:
 st.session_state['current'] = ix
 
 #st.write(st.session_state)
+st.write(f"Strukturer for setning nr {ix} til {ix + antall}")
 for inx in range(ix, ix+antall):
     try:   
         G = make_sentence_graph(inx)
